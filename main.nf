@@ -7,15 +7,21 @@
 ----------------------------------------------------------------------------------------
 */
 
+nextflow.preview.output = true
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { CERTIFICATE  } from './workflows/certificate'
+include { softwareVersionsToYAML  } from './subworkflows/nf-core/utils_nfcore_pipeline'
+
+include { INKSCAPE                } from './modules/local/inkscape'
+
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_certificate_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_certificate_pipeline'
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NAMED WORKFLOWS FOR PIPELINE
@@ -25,20 +31,17 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_cert
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow MAXULYSSE_CERTIFICATE {
-
+workflow GENERATE_CERTIFICATE {
     take:
     samplesheet // channel: samplesheet read in from --input
 
     main:
+    INKSCAPE(samplesheet)
 
-    //
-    // WORKFLOW: Run pipeline
-    //
-    CERTIFICATE (
-        samplesheet
-    )
+    emit:
+    pdf = INKSCAPE.out.pdf
 }
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -46,30 +49,27 @@ workflow MAXULYSSE_CERTIFICATE {
 */
 
 workflow {
-
     main:
-    //
     // SUBWORKFLOW: Run initialisation tasks
-    //
-    PIPELINE_INITIALISATION (
+    PIPELINE_INITIALISATION(
         params.version,
         params.validate_params,
         params.monochrome_logs,
         args,
         params.outdir,
-        params.input
+        params.input,
     )
 
-    //
     // WORKFLOW: Run main workflow
-    //
-    MAXULYSSE_CERTIFICATE (
+    GENERATE_CERTIFICATE(
         PIPELINE_INITIALISATION.out.samplesheet
     )
-    //
+
+    // Collate and save software versions
+    softwareVersionsToYAML(channel.topic('versions')).collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_certificate_software_versions.yml', sort: false, cache: false)
+
     // SUBWORKFLOW: Run completion tasks
-    //
-    PIPELINE_COMPLETION (
+    PIPELINE_COMPLETION(
         params.email,
         params.email_on_fail,
         params.plaintext_email,
@@ -77,10 +77,15 @@ workflow {
         params.monochrome_logs,
         params.hook_url,
     )
+
+    publish:
+    pdf = GENERATE_CERTIFICATE.out.pdf
 }
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+output {
+    pdf {
+        path { meta, file ->
+            file >> "pdf/${meta.id}.pdf"
+        }
+    }
+}

@@ -7,27 +7,47 @@
     "items": {
         "type": "object",
         "properties": {
-            "sample": {
+            "name": {
                 "type": "string",
-                "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "errorMessage": "Participant name must be provided",
                 "meta": ["id"]
             },
-            "fastq_1": {
+            "certificate": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^\\S+\\.svg$",
+                "errorMessage": "SVG source file, cannot contain spaces and must have extension '.svg'"
             },
-            "fastq_2": {
+            "place_date": {
                 "type": "string",
-                "format": "file-path",
-                "exists": true,
-                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "meta": ["place_date"],
+                "errorMessage": "Place_date/Date must be provided"
+            },
+            "signature": {
+                "type": "string",
+                "meta": ["signature"],
+                "errorMessage": "Signature must be provided"
+            },
+            "text_line1": {
+                "type": "string",
+                "meta": ["text_line1"],
+                "default": "",
+                "errorMessage": "Text line 1 should be provided"
+            },
+            "text_line2": {
+                "type": "string",
+                "default": "",
+                "meta": ["text_line2"],
+                "errorMessage": "Text line 2 should be provided"
+            },
+            "text_line3": {
+                "type": "string",
+                "meta": ["text_line3"],
+                "default": "",
+                "errorMessage": "Text line 3 should be provided"
             }
         },
-        "required": ["sample", "fastq_1"]
+        "required": ["name", "certificate", "place_date", "signature"]
     }
 }
