@@ -1,33 +1,31 @@
 lint:
   files_exist:
-    - conf/igenomes.config
-    - conf/igenomes_ignored.config
-    - assets/multiqc_config.yml
-    - conf/igenomes.config
-    - conf/igenomes_ignored.config
-    - assets/multiqc_config.yml
-    - CODE_OF_CONDUCT.md
-    - assets/nf-core-certificate_logo_light.png
-    - docs/images/nf-core-certificate_logo_light.png
-    - docs/images/nf-core-certificate_logo_dark.png
     - .github/ISSUE_TEMPLATE/config.yml
-    - .github/workflows/awstest.yml
     - .github/workflows/awsfulltest.yml
+    - .github/workflows/awstest.yml
+    - CODE_OF_CONDUCT.md
+    - assets/multiqc_config.yml
+    - assets/nf-core-certificate_logo_light.png
+    - conf/igenomes.config
+    - conf/igenomes_ignored.config
+    - conf/modules.config
+    - conf/test_full.config
+    - docs/images/nf-core-certificate_logo_dark.png
+    - docs/images/nf-core-certificate_logo_light.png
   files_unchanged:
     - .github/CONTRIBUTING.md
-    - assets/sendmail_template.txt
-    - .github/CONTRIBUTING.md
-    - assets/sendmail_template.txt
-    - CODE_OF_CONDUCT.md
-    - assets/nf-core-certificate_logo_light.png
-    - docs/images/nf-core-certificate_logo_light.png
-    - docs/images/nf-core-certificate_logo_dark.png
     - .github/ISSUE_TEMPLATE/bug_report.yml
-    - .github/CONTRIBUTING.md
     - .github/PULL_REQUEST_TEMPLATE.md
+    - CODE_OF_CONDUCT.md
     - assets/email_template.txt
+    - assets/nf-core-certificate_logo_light.png
+    - assets/sendmail_template.txt
     - docs/README.md
+    - docs/images/nf-core-certificate_logo_dark.png
+    - docs/images/nf-core-certificate_logo_light.png
   multiqc_config: false
+  modules_config: false
+  nf_test_content: false
   nextflow_config:
     - manifest.name
     - manifest.homePage
