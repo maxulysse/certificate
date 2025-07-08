@@ -66,7 +66,7 @@ workflow {
     )
 
     // Collate and save software versions
-    softwareVersionsToYAML(channel.topic('versions')).collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_certificate_software_versions.yml', sort: false, cache: false)
+    softwareVersionsToYAML(channel.topic('versions')).collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'certificate_software_versions.yml', sort: false, cache: false)
 
     // SUBWORKFLOW: Run completion tasks
     PIPELINE_COMPLETION(
