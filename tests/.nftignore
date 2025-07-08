@@ -1,3 +1,4 @@
 .DS_Store
-inkscape/*.pdf
+pdf/*.pdf
 pipeline_info/*.{html,json,txt,yml}
+svg/*.svg

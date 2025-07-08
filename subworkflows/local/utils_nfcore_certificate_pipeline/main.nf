@@ -8,14 +8,18 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { UTILS_NFSCHEMA_PLUGIN   } from '../../nf-core/utils_nfschema_plugin'
 include { paramsSummaryMap        } from 'plugin/nf-schema'
 include { samplesheetToList       } from 'plugin/nf-schema'
+
 include { completionEmail         } from '../../nf-core/utils_nfcore_pipeline'
 include { completionSummary       } from '../../nf-core/utils_nfcore_pipeline'
 include { imNotification          } from '../../nf-core/utils_nfcore_pipeline'
-include { UTILS_NFCORE_PIPELINE   } from '../../nf-core/utils_nfcore_pipeline'
+include { processVersionsFromYAML } from '../../nf-core/utils_nfcore_pipeline'
+include { workflowVersionToYAML   } from '../../nf-core/utils_nfcore_pipeline'
+
 include { UTILS_NEXTFLOW_PIPELINE } from '../../nf-core/utils_nextflow_pipeline'
+include { UTILS_NFCORE_PIPELINE   } from '../../nf-core/utils_nfcore_pipeline'
+include { UTILS_NFSCHEMA_PLUGIN   } from '../../nf-core/utils_nfschema_plugin'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -156,6 +160,24 @@ def update_svg(meta, certificate) {
     correct_svg_file.text = updated_svg_content
 
     return [meta, correct_svg_file]
+}
+
+//
+// Get channel of software versions used in pipeline in YAML format
+//
+def softwareVersionsToYAML(ch_versions) {
+    return ch_versions
+        .map { process, tool, version ->
+            def yaml = """
+            ${process}:
+                ${tool}: ${version}
+            """.stripIndent().trim()
+            return yaml
+        }
+        .unique()
+        .map { version -> processVersionsFromYAML(version) + '\n' }
+        .unique()
+        .mix(Channel.of(workflowVersionToYAML() + '\n'))
 }
 
 //
