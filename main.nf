@@ -15,7 +15,7 @@ nextflow.preview.output = true
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { softwareVersionsToYAML  } from './subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML  } from './subworkflows/local/utils_nfcore_certificate_pipeline'
 
 include { INKSCAPE                } from './modules/local/inkscape'
 
